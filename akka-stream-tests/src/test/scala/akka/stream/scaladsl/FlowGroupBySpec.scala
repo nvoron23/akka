@@ -12,6 +12,7 @@ import akka.stream.Supervision.resumingDecider
 import akka.stream.testkit._
 import akka.stream.testkit.StreamTestKit.TE
 import org.reactivestreams.Publisher
+import akka.stream.OperationAttributes
 
 class FlowGroupBySpec extends AkkaSpec {
 

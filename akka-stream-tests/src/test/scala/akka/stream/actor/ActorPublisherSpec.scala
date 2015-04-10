@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 import akka.stream.impl.SubscriberSink
 import akka.stream.ActorFlowMaterializerSettings
+import akka.stream.OperationAttributes
 
 object ActorPublisherSpec {
 

@@ -15,6 +15,7 @@ import akka.actor.Actor
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
+import akka.stream.OperationAttributes
 import scala.concurrent.ExecutionContext
 import akka.stream.ActorFlowMaterializerSettings
 import java.util.concurrent.atomic.AtomicInteger

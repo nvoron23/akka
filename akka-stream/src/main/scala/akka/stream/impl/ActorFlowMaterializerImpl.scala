@@ -57,7 +57,7 @@ private[akka] case class ActorFlowMaterializerImpl(override val settings: ActorF
       private val flowName = createFlowName()
       private var nextId = 0
       private def stageName(attr: OperationAttributes): String = {
-        val name = s"$flowName-$nextId-${attr.name}"
+        val name = s"$flowName-$nextId-${attr.nameOrDefault()}"
         nextId += 1
         name
       }
@@ -66,7 +66,6 @@ private[akka] case class ActorFlowMaterializerImpl(override val settings: ActorF
 
         def newMaterializationContext() = new MaterializationContext(ActorFlowMaterializerImpl.this,
           effectiveAttributes, stageName(effectiveAttributes))
-
         atomic match {
           case sink: SinkModule[_, _] ⇒
             val (sub, mat) = sink.create(newMaterializationContext())

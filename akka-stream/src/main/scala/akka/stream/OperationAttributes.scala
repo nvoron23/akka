@@ -1,10 +1,10 @@
 /**
  * Copyright (C) 2014 Typesafe Inc. <http://www.typesafe.com>
  */
-package akka.stream.scaladsl
+package akka.stream
 
+import akka.stream.javadsl.japi
 import akka.stream.impl.Stages.StageModule
-import akka.stream.Supervision
 
 /**
  * Holds attributes which can be used to alter [[Flow]] or [[FlowGraph]]
@@ -13,6 +13,14 @@ import akka.stream.Supervision
 final case class OperationAttributes private (attributes: List[OperationAttributes.Attribute] = Nil) {
 
   import OperationAttributes._
+
+  /**
+   * Java API
+   */
+  def getAttributes(): java.util.List[Attribute] = {
+    import scala.collection.JavaConverters._
+    attributes.asJava
+  }
 
   /**
    * Adds given attributes to the end of these attributes.
@@ -33,9 +41,9 @@ final case class OperationAttributes private (attributes: List[OperationAttribut
   /**
    * INTERNAL API
    */
-  private[akka] def name: String = nameLifted match {
+  private[akka] def nameOrDefault(default: String = "unknown-operation"): String = nameLifted match {
     case Some(name) ⇒ name
-    case _          ⇒ "unknown-operation"
+    case _          ⇒ default
   }
 
   /**
@@ -44,6 +52,9 @@ final case class OperationAttributes private (attributes: List[OperationAttribut
   private[akka] def nameOption: Option[String] =
     attributes.collectFirst { case Name(name) ⇒ name }
 
+  /**
+   * INTERNAL API
+   */
   private[akka] def transform(node: StageModule): StageModule =
     if ((this eq OperationAttributes.none) || (this eq node.attributes)) node
     else node.withAttributes(attributes = this and node.attributes)
@@ -82,8 +93,14 @@ object OperationAttributes {
   def dispatcher(dispatcher: String): OperationAttributes = OperationAttributes(Dispatcher(dispatcher))
 
   /**
-   * Decides how exceptions from user are to be handled.
+   * Scala API: Decides how exceptions from user are to be handled.
    */
   def supervisionStrategy(decider: Supervision.Decider): OperationAttributes =
     OperationAttributes(SupervisionStrategy(decider))
+
+  /**
+   * Java API: Decides how exceptions from application code are to be handled.
+   */
+  def withSupervisionStrategy(decider: japi.Function[Throwable, Supervision.Directive]): OperationAttributes =
+    OperationAttributes.supervisionStrategy(e ⇒ decider.apply(e))
 }

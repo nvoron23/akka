@@ -11,15 +11,15 @@ import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
 import akka.util.ByteString
 import akka.http.model.RequestEntity
-import akka.stream.{ FlowMaterializer, impl }
+import akka.stream.{ FlowMaterializer, impl, OperationAttributes }
 import akka.stream.scaladsl._
 import akka.stream.stage._
-import OperationAttributes._
 
 /**
  * INTERNAL API
  */
 private[http] object StreamUtils {
+  import OperationAttributes._
 
   /**
    * Creates a transformer that will call `f` for each incoming ByteString and output its result. After the complete

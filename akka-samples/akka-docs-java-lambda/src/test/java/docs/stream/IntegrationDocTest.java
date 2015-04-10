@@ -346,7 +346,7 @@ public class IntegrationDocTest {
 
         //#email-addresses-mapAsync-supervision
         final OperationAttributes resumeAttrib =
-          OperationAttributes.supervisionStrategy(Supervision.getResumingDecider());
+          OperationAttributes.withSupervisionStrategy(Supervision.getResumingDecider());
         final Flow<Author, String, BoxedUnit> lookupEmail =
             Flow.of(Author.class)
             .mapAsync(4, author -> addressSystem.lookupEmail(author.handle))

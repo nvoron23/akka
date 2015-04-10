@@ -9,6 +9,7 @@ import akka.stream.ActorFlowMaterializerSettings
 import akka.stream.Supervision
 import akka.stream.scaladsl._
 import akka.stream.testkit.AkkaSpec
+import akka.stream.OperationAttributes
 
 class FlowErrorDocSpec extends AkkaSpec {
 

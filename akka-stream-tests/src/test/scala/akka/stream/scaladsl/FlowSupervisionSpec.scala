@@ -13,6 +13,7 @@ import scala.concurrent.Await
 import akka.stream.testkit.StreamTestKit.SubscriberProbe
 import akka.stream.Supervision
 import akka.stream.impl.ReactiveStreamsCompliance
+import akka.stream.OperationAttributes
 
 class FlowSupervisionSpec extends AkkaSpec {
   import OperationAttributes.supervisionStrategy
