@@ -40,6 +40,7 @@ private[akka] case class ActorFlowMaterializerImpl(override val settings: ActorF
 
   override def effectiveSettings(opAttr: OperationAttributes): ActorFlowMaterializerSettings = {
     import OperationAttributes._
+    import ActorOperationAttributes._
     opAttr.attributes.foldLeft(settings) { (s, attr) ⇒
       attr match {
         case InputBuffer(initial, max)    ⇒ s.withInputBuffer(initial, max)

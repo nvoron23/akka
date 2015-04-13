@@ -9,6 +9,8 @@ import akka.stream.impl.Stages.StageModule
 /**
  * Holds attributes which can be used to alter [[Flow]] or [[FlowGraph]]
  * materialization.
+ *
+ * Note that more attributes for the [[ActorFlowMaterializer]] are defined in [[ActorOperationAttributes]].
  */
 final case class OperationAttributes private (attributes: List[OperationAttributes.Attribute] = Nil) {
 
@@ -61,15 +63,19 @@ final case class OperationAttributes private (attributes: List[OperationAttribut
 
 }
 
+/**
+ * Note that more attributes for the [[ActorFlowMaterializer]] are defined in [[ActorOperationAttributes]].
+ */
 object OperationAttributes {
 
-  sealed trait Attribute
+  trait Attribute
   final case class Name(n: String) extends Attribute
   final case class InputBuffer(initial: Int, max: Int) extends Attribute
-  final case class Dispatcher(dispatcher: String) extends Attribute
-  final case class SupervisionStrategy(decider: Supervision.Decider) extends Attribute
 
-  private[OperationAttributes] def apply(attribute: Attribute): OperationAttributes =
+  /**
+   * INTERNAL API
+   */
+  private[akka] def apply(attribute: Attribute): OperationAttributes =
     apply(List(attribute))
 
   val none: OperationAttributes = OperationAttributes()
@@ -87,6 +93,17 @@ object OperationAttributes {
    */
   def inputBuffer(initial: Int, max: Int): OperationAttributes = OperationAttributes(InputBuffer(initial, max))
 
+}
+
+/**
+ * Attributes for the [[ActorFlowMaterializer]].
+ * Note that more attributes defined in [[OperationAttributes]].
+ */
+object ActorOperationAttributes {
+  import OperationAttributes._
+  final case class Dispatcher(dispatcher: String) extends Attribute
+  final case class SupervisionStrategy(decider: Supervision.Decider) extends Attribute
+
   /**
    * Specifies the name of the dispatcher.
    */
@@ -102,5 +119,5 @@ object OperationAttributes {
    * Java API: Decides how exceptions from application code are to be handled.
    */
   def withSupervisionStrategy(decider: japi.Function[Throwable, Supervision.Directive]): OperationAttributes =
-    OperationAttributes.supervisionStrategy(e ⇒ decider.apply(e))
+    ActorOperationAttributes.supervisionStrategy(e ⇒ decider.apply(e))
 }

@@ -11,7 +11,7 @@ import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
 import akka.util.ByteString
 import akka.http.model.RequestEntity
-import akka.stream.{ FlowMaterializer, impl, OperationAttributes }
+import akka.stream.{ FlowMaterializer, impl, OperationAttributes, ActorOperationAttributes }
 import akka.stream.scaladsl._
 import akka.stream.stage._
 
@@ -178,7 +178,7 @@ private[http] object StreamUtils {
         } else ByteString.empty
     }
 
-    Source(() ⇒ iterator).withAttributes(OperationAttributes.dispatcher(fileIODispatcher))
+    Source(() ⇒ iterator).withAttributes(ActorOperationAttributes.dispatcher(fileIODispatcher))
 
   }
 
