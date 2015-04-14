@@ -190,7 +190,10 @@ object FlexiRoute {
 abstract class FlexiRoute[In, S <: Shape](val shape: S, attributes: OperationAttributes) extends Graph[S, Unit] {
   import akka.stream.scaladsl.FlexiRoute._
 
-  val module: StreamLayout.Module = new FlexiRouteModule(shape, createRouteLogic)
+  /**
+   * INTERNAL API
+   */
+  private[stream] val module: StreamLayout.Module = new FlexiRouteModule(shape, createRouteLogic)
 
   /**
    * This allows a type-safe mini-DSL for selecting one of several ports, very useful in
@@ -232,4 +235,10 @@ abstract class FlexiRoute[In, S <: Shape](val shape: S, attributes: OperationAtt
     case Some(n) ⇒ n
     case None    ⇒ super.toString
   }
+
+  // FIXME what to do about this?
+  override def withAttributes(attr: OperationAttributes): Graph[S, Unit] =
+    throw new UnsupportedOperationException("withAttributes not supported by FlexiRoute")
+
+  override def named(name: String): Graph[S, Unit] = withAttributes(OperationAttributes.name(name))
 }

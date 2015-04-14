@@ -277,7 +277,10 @@ object FlexiRoute {
 abstract class FlexiRoute[In, S <: Shape](val shape: S, val attributes: OperationAttributes) extends Graph[S, Unit] {
   import FlexiRoute._
 
-  val module: StreamLayout.Module = new FlexiRouteModule(shape, (s: S) ⇒ new Internal.RouteLogicWrapper(createRouteLogic(s)))
+  /**
+   * INTERNAL API
+   */
+  private[stream] val module: StreamLayout.Module = new FlexiRouteModule(shape, (s: S) ⇒ new Internal.RouteLogicWrapper(createRouteLogic(s)))
 
   /**
    * Create the stateful logic that will be used when reading input elements
@@ -289,5 +292,11 @@ abstract class FlexiRoute[In, S <: Shape](val shape: S, val attributes: Operatio
     case Some(n) ⇒ n
     case None    ⇒ super.toString
   }
+
+  // FIXME what to do about this?
+  override def withAttributes(attr: scaladsl.OperationAttributes): Graph[S, Unit] =
+    throw new UnsupportedOperationException("withAttributes not supported by FlexiRoute")
+
+  override def named(name: String): Graph[S, Unit] = withAttributes(scaladsl.OperationAttributes.name(name))
 
 }

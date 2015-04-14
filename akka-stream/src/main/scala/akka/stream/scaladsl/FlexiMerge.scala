@@ -223,7 +223,10 @@ object FlexiMerge {
  * @param attributes optional attributes for this junction
  */
 abstract class FlexiMerge[Out, S <: Shape](val shape: S, attributes: OperationAttributes) extends Graph[S, Unit] {
-  val module: StreamLayout.Module = new FlexiMergeModule(shape, createMergeLogic)
+  /**
+   * INTERNAL API
+   */
+  private[stream] val module: StreamLayout.Module = new FlexiMergeModule(shape, createMergeLogic)
 
   type PortT = S
 
@@ -233,4 +236,10 @@ abstract class FlexiMerge[Out, S <: Shape](val shape: S, attributes: OperationAt
     case Some(n) ⇒ n
     case None    ⇒ super.toString
   }
+
+  // FIXME what to do about this?
+  override def withAttributes(attr: OperationAttributes): Graph[S, Unit] =
+    throw new UnsupportedOperationException("withAttributes not supported by FlexiMerge")
+
+  override def named(name: String): Graph[S, Unit] = withAttributes(OperationAttributes.name(name))
 }

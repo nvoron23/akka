@@ -122,4 +122,7 @@ class BidiFlow[-I1, +O1, -I2, +O2, +Mat](delegate: scaladsl.BidiFlow[I1, O1, I2,
    * Turn this BidiFlow around by 180 degrees, logically flipping it upside down in a protocol stack.
    */
   def reversed: BidiFlow[I2, O2, I1, O1, Mat] = new BidiFlow(delegate.reversed)
+
+  override def withAttributes(attr: scaladsl.OperationAttributes): BidiFlow[I1, O1, I2, O2, Mat] =
+    new BidiFlow(delegate.withAttributes(attr))
 }
